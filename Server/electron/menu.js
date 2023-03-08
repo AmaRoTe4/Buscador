@@ -1,10 +1,33 @@
-const { Menu } = require('electron')
+const { Menu  } = require('electron')
 
-const setMainMenu = () => {
+const setMainMenu = (mainWindow) => {
   const template = [
     {
-      label: 'Inicio',
-    }
+      label: "Back",
+      click: () => {
+        mainWindow.webContents.goBack();
+      }
+    },
+    {
+      label: "forward",
+      click: () => {
+        mainWindow.webContents.goForward();
+      }
+    },
+    {
+      label: 'View',
+      submenu: [
+        { role: 'reload' },
+        { role: 'forceReload' },
+        { role: 'toggleDevTools' },
+        { type: 'separator' },
+        { role: 'resetZoom' },
+        { role: 'zoomIn' },
+        { role: 'zoomOut' },
+        { type: 'separator' },
+        { role: 'togglefullscreen' }
+      ]
+    },
   ]
 
   const menu = Menu.buildFromTemplate(template)

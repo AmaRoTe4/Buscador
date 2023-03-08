@@ -4,9 +4,9 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "start-g": "electron ./google.js",
-    "start-w": "electron ./whatsapp.js",
-    "start-y": "electron ./youtube.js",
+    "start-g": "electron ./windows/google.js",
+    "start-w": "electron ./windows/whatsapp.js",
+    "start-y": "electron ./windows/youtube.js",
     "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
