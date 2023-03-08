@@ -1,7 +1,7 @@
 const { app }  = require('electron')
 const { Buscador } = require("./app.js")
 
-Buscador("http://localhost:5173");
+Buscador("https://www.google.com/");
 
 app.on('window-all-closed', () => {
     app.quit()

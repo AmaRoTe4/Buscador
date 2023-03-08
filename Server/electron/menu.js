@@ -9,7 +9,7 @@ const setMainMenu = (mainWindow) => {
       }
     },
     {
-      label: "forward",
+      label: "Forward",
       click: () => {
         mainWindow.webContents.goForward();
       }

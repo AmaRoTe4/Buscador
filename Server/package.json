@@ -1,22 +1,35 @@
 {
-  "name": "server",
+  "name": "buscador",
   "version": "1.0.0",
   "description": "",
   "main": "main.js",
+  "homepage": "",
   "scripts": {
     "start-g": "electron ./windows/google.js",
     "start-w": "electron ./windows/whatsapp.js",
     "start-y": "electron ./windows/youtube.js",
     "start": "electron .",
+    "build": "electron-builder",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": {
+    "name":"amaro cattarozzi",
+    "email":"amaro7JJ@gmail.com"
+  },
   "license": "ISC",
   "devDependencies": {
-    "electron": "^23.1.3"
+    "electron": "^23.1.3",
+    "electron-builder": "^23.6.0"
   },
   "dependencies": {
     "update-electron-app": "^2.0.1"
+  },
+  "build":{
+    "linux": {
+      "target":[
+        "deb"
+      ]
+    }
   }
 }
