@@ -1,7 +1,5 @@
 const { app, BrowserWindow } = require( 'electron')
 const { setMainMenu } = require('./electron/menu.js')
-const { webContents } = require('electron')
-
 
 const createWindow = async (direccion) => {
   const mainWindow = new BrowserWindow({

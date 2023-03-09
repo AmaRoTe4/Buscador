@@ -8,6 +8,7 @@
     "start-g": "electron ./windows/google.js",
     "start-w": "electron ./windows/whatsapp.js",
     "start-y": "electron ./windows/youtube.js",
+    "start-n": "electron ./windows/notas.js",
     "start": "electron .",
     "build": "electron-builder",
     "test": "echo \"Error: no test specified\" && exit 1"
