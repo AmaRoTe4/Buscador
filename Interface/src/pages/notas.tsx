@@ -11,13 +11,6 @@ export default function Init(){
     const [categorias , setCategorias] = useState<string[]>(["1" , "2" , "3" , "4"])
     const [categoria , setCategoria] = useState<string>(categorias[0])
 
-    //useEffect(() => {
-        //console.log(color)
-        //console.log(name)
-        //console.log(jerarquia)
-        //console.log(categoria)
-    //} , [color , name , jerarquia ,categoria])
-
     return (
         <div className="content-box centrado flex-column">
             <div className="w100 d-flex justify-content-center" style={{height: "20vh"}}>
