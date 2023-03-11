@@ -1,36 +1,70 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "../App.css"
 import { Categoria, Nota } from "../interfaces"
+import { cartelError } from "../components/carteles/cartelError";
+import { getAllCategorias } from "../api/categorias";
+import { useLocation } from "react-router-dom";
+import { getNotas, updateNotas } from "../api/notas";
+import { cartelOk } from "../components/carteles/cartelesOkey";
 
 const defaultNota:Nota = {
     id:0,
 	nombre:"",
 	categoria:0,
-	jerarquía:0,
+	jerarquia:0,
 	color:"rgb(0 0 0)",
 	createdAt:"0 - 0",
 	text:"",
 }
 
+const defaultCategoria:Categoria = {
+    id:0,
+	nombre:"",
+	jerarquia:100,
+	color:"",
+	createdAt:"",
+}
+
 export default function Init(){
+    const id_nota:number = Number((useLocation().pathname).split("/")[2])
     const [editar , setEditar] = useState<boolean>(false);
     const [nota , setNota] = useState<Nota>(defaultNota);
-    const [categorias , setCategorias] = useState<Categoria[]>([
-        {
-            id:0,
-	        nombre:"personaje1",
-	        jerarquía:0,
-	        color:"",
-	        createdAt:"",
-        },
-        {
-            id:0,
-	        nombre:"personaje2",
-	        jerarquía:0,
-	        color:"",
-	        createdAt:"",
-        },
-    ])
+    const [categoriasSel , setCategoriasSel] = useState<Categoria>(defaultCategoria)
+
+
+    const [categorias , setCategorias] = useState<Categoria[]>([])
+
+    useEffect(() => {
+        obtenerNota()
+        obtenerCategoria()
+    }, [])
+    
+    const obtenerNota = async () => {
+        const data:Nota | undefined = await getNotas(id_nota)
+        if(data === undefined) {
+            cartelError("Error de Conexion")
+            return
+        }
+        setNota(data)
+    }
+
+    const obtenerCategoria = async () => {
+        const data:Categoria[] | undefined = await getAllCategorias()
+        if(data === undefined) {
+            cartelError("Error de Conexion")
+            return
+        }
+        setCategorias(data)
+
+        const categoriaSal:Categoria | undefined = data.find(n => n.id === nota.id)
+        if(categoriaSal !== undefined) setCategoriasSel(categoriaSal)
+    }
+
+    const actualizar = async () => {
+        const resultado:boolean = await updateNotas(id_nota , nota)
+        if(!resultado) cartelError("Error de Conexion")
+        if(resultado) cartelOk("Actualizado Con Exito")
+    }
 
     return (
         <div className="content-box centrado flex-column">
@@ -39,14 +73,14 @@ export default function Init(){
                     View
                 </h1>
             </div>
-            <div className="d-flex" style={{width: "100vw" , height: "86vh"}}>
+            {nota.id !== 0 && <div className="d-flex" style={{width: "100vw" , height: "86vh"}}>
 
                 <div className="d-flex flex-column align-items-center" style={{width: "20vw" , height: "100%"}}>
                     <div className="box-input-view">
                         <label>Nombre</label>
                         <input 
                             placeholder="Nombre"
-                            style={{width: '16.5vw'}}
+                            style={{width: '16.5vw' , padding: 10}}
                             disabled={!editar}
                             type="text" 
                             value={nota.nombre}
@@ -54,7 +88,7 @@ export default function Init(){
                                 id:nota.id,
 	                            nombre: e.target.value,
 	                            categoria: nota.categoria,
-	                            jerarquía: nota.jerarquía,
+	                            jerarquia: nota.jerarquia,
 	                            color: nota.color,
 	                            createdAt: nota.createdAt,
 	                            text: nota.text,
@@ -67,10 +101,10 @@ export default function Init(){
                             max={100}
                             min={1}
                             placeholder="Jerarquia"
-                            style={{width: '16.5vw'}}
+                            style={{width: '16.5vw', padding: 10}}
                             disabled={!editar}
                             type="number"
-                            value={nota.jerarquía}
+                            value={nota.jerarquia}
                             onChange={e => 
                                 //@ts-ignore
                                 e.nativeEvent.data !== undefined ?
@@ -78,7 +112,7 @@ export default function Init(){
                                     id:nota.id,
 	                                nombre: nota.nombre,
 	                                categoria: nota.categoria,
-	                                jerarquía: 
+	                                jerarquia: 
                                         Number(e.target.value) > 100 
                                         ? 100 : Number(e.target.value) < 1 
                                         ? 1 : Number(e.target.value),
@@ -91,13 +125,14 @@ export default function Init(){
                     {categorias.length > 0 && <div className="box-input-view">
                         <label>Categorias</label>
                         <select
+                            style={{padding: 5}}
                             disabled={!editar}
                             onChange={e => setNota({
                                 id:nota.id,
 	                            nombre: nota.nombre,
                                 //@ts-ignore
 	                            categoria: categorias.find(n => n.nombre === e.target.value).id,
-	                            jerarquía: nota.jerarquía,
+	                            jerarquia: nota.jerarquia,
 	                            color: nota.color,
 	                            createdAt: nota.createdAt,
 	                            text: nota.text,
@@ -110,7 +145,7 @@ export default function Init(){
                     <div className="box-input-view">
                         <label>Color</label>
                         <input 
-                            style={{width: '16.5vw'}}
+                            style={{width: '16.5vw' , padding: 5}}
                             disabled={!editar}
                             type="color" 
                             value={nota.color}
@@ -118,7 +153,7 @@ export default function Init(){
                                 id:nota.id,
                                 nombre: nota.nombre,
                                 categoria: nota.categoria,
-                                jerarquía: nota.jerarquía,
+                                jerarquia: nota.jerarquia,
                                 color: e.target.value,
                                 createdAt: nota.createdAt,
                                 text: nota.text,
@@ -134,6 +169,15 @@ export default function Init(){
                             style={{width: "90%" , height: "40%"}} 
                         />
                     </div>
+                    <div className="box-input-view">
+                        <button 
+                            disabled={!editar} 
+                            className="btn btn-success" 
+                            onClick={e => {e.preventDefault() ; actualizar()}}
+                        >
+                            Actualizar
+                        </button>
+                    </div>
                 </div>
                 
                 <div className="d-flex justify-content-center" style={{width: "80vw" , height: "100%"}}>
@@ -147,7 +191,7 @@ export default function Init(){
                             id:nota.id,
                             nombre: nota.nombre,
                             categoria: nota.categoria,
-                            jerarquía: nota.jerarquía,
+                            jerarquia: nota.jerarquia,
                             color: nota.color,
                             createdAt: nota.createdAt,
                             text: e.target.value,
@@ -157,7 +201,7 @@ export default function Init(){
                 
                 </div>
             
-            </div>
+            </div>}
         </div>
     )
 }

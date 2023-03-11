@@ -1,8 +1,25 @@
 import { Link } from "react-router-dom"
 import "../App.css"
+import { useEffect, useState } from "react"
+import { getAllNotasYoungOld } from "../api/notas"
+import { Nota } from "../interfaces"
+import { cartelError } from "../components/carteles/cartelError"
 
 export default function Init(){
-    const links:string[] = ["note1" , "note2", "note3" , "note4" , "note5", "note6", "note7" , "note8" , "note9", "note10"]
+    const [ultimasNotas , setUltimasNomas] = useState<Nota[]>([])
+
+    useEffect(() => {
+        obtenerLasUltimasNotas()
+    }, [])
+    
+    const obtenerLasUltimasNotas = async () => {
+        const data:Nota[] | undefined = await getAllNotasYoungOld()
+        if(data === undefined) {
+            cartelError("Error de Conexion")
+            return
+        }
+        setUltimasNomas(data)
+    }
 
     return (
         <div className="content-box centrado flex-column">
@@ -29,10 +46,10 @@ export default function Init(){
                 </div>
             </div>
             <ul 
-                className="ultimas-notas d-flex flex-column w100 align-items-center"
+                className="ultimas-notas d-flex flex-column align-items-center"
             >
-                    {links.map((n , i) => 
-                        <Link key={i} to={`/view/${i}`}>{n}</Link>
+                    {ultimasNotas.map((n , i) => 
+                        <Link key={n.id} to={`/view/${n.id}`}>{n.nombre}</Link>
                     )}
             </ul>
         </div>

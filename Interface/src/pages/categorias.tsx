@@ -1,19 +1,78 @@
 import { useEffect, useState } from "react"
 import "../App.css"
 import { useLocation } from "react-router-dom"
+import { cartelError } from "../components/carteles/cartelError"
+import { cartelOk } from "../components/carteles/cartelesOkey"
+import { createCategoria, getCategoria, updateCategoria } from "../api/categorias"
+import { Categoria } from "../interfaces"
+
+const defaultCategoria:Categoria = {
+    id:0,
+	nombre:"",
+	jerarquia:100,
+	color:"",
+	createdAt:"",
+}
 
 export default function Init(){
     const location:number = Number(useLocation().pathname.split("/")[2])     
+    const [categoria , setCategoria] = useState<Categoria>(defaultCategoria)
     const [name , setName] = useState<string>("")
     const [color , setColor] = useState<string>("")
     const [jerarquia , setJerarquia] = useState<number>(100)
 
-    //useEffect(() => {
-        //console.log(color)
-        //console.log(name)
-        //console.log(jerarquia)
-        //console.log(categoria)
-    //} , [color , name , jerarquia ,categoria])
+    useEffect(() => {
+        if(location !== 0) obtenerNotasDefault()
+    }, [])
+    
+    const obtenerNotasDefault = async () => {
+        const data:Categoria | undefined = await getCategoria(location)
+        if(data === undefined) {
+            cartelError("Error de Conexion")
+            return
+        }
+        setCategoria(data)
+        setName(data.nombre)
+        setColor(data.color)
+        setJerarquia(data.jerarquia)
+    }
+
+    const crear = async () => {
+        const resultado:boolean = await createCategoria(
+            {
+                id:0,
+	            nombre:name,
+	            jerarquia:jerarquia,
+	            color:color,
+	            createdAt:"",
+            }
+        )
+        if(!resultado) {
+            cartelError("Error de Conexion")
+            return
+        }
+
+        cartelOk("Creado con Exito")
+    }
+
+    const editar = async () => {
+        const resultado:boolean = await updateCategoria(
+            location,
+            {
+                id:categoria.id,
+	            nombre:name,
+	            jerarquia:jerarquia,
+	            color:color,
+	            createdAt:categoria.createdAt,
+            }
+        )
+        if(!resultado) {
+            cartelError("Error de Conexion")
+            return
+        }
+
+        cartelOk("Editado con Exito")
+    }
 
     return (
         <div className="content-box centrado flex-column">
@@ -55,7 +114,12 @@ export default function Init(){
                 </div>
             </div>  
             <div className="w100 mb-5 d-flex justify-content-center align-items-center" style={{height: "6vh"}}>
-                <button className="btn btn-success btnAcciones">{location === 0 ? "Create" : "Editar"}</button>
+                <button 
+                    className="btn btn-success btnAcciones"
+                    onClick={e => {e.preventDefault(); location === 0 ? crear() : editar() }}
+                >
+                    {location === 0 ? "Create" : "Editar"}
+                </button>
             </div>
         </div>
     )

@@ -100,6 +100,10 @@ ul{
   display: none;
 }
 
+.ultimas-notas a{
+  width: 300px !important;
+}
+
 .creat-input-box{
   height: 50%;
   width: 40%;

@@ -2,7 +2,7 @@ export interface Nota {
     id:number;
 	nombre:string;
 	categoria:number;
-	jerarquía:number;
+	jerarquia:number;
 	color:string;
 	createdAt:string;
 	updatedAt?:string;
@@ -12,7 +12,7 @@ export interface Nota {
 export interface Categoria {
     id:number;
 	nombre:string;
-	jerarquía:number;
+	jerarquia:number;
 	color:string;
 	createdAt:string;
 }
