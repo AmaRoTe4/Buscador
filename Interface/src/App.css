@@ -276,6 +276,16 @@ textarea::-webkit-scrollbar{
   justify-content: center;
 }
 
+.box-orden-categorias-all-div a{
+  font-size: 40px;
+  text-decoration: none;
+  color: white;
+}
+
+.box-orden-categorias-all-div a:hover{
+  color: rgb(0, 161, 235);
+}
+
 .box-notas-end{
   margin: 0px;
   padding: 0px;
@@ -291,6 +301,7 @@ textarea::-webkit-scrollbar{
 
 .box-notas-end:hover{
   cursor: pointer;
+  opacity: 0.9;
   animation-duration: 0.7s;
   animation-name: box-notas-end;
   animation-fill-mode: forwards;
@@ -299,32 +310,19 @@ textarea::-webkit-scrollbar{
 @keyframes box-notas-end{
   100% {
     transform:scale(115%);
-    border: 2px solid rgb(255, 255, 255);
   }
-}
-
-.box-notas-end span{
-  display: flex;
-  justify-content:center;
-  align-items:center;
-  height: 100%;
-  width: 10%;
-  border-top-left-radius:15px;
-  border-bottom-left-radius:15px;
-  background-color: rgb(100 100 100);
 }
 
 .box-notas-end div{
   display: flex;
   align-items:center;
   height: 100%;
-  width: 90%;
-  border-top-right-radius:15px;
-  border-bottom-right-radius:15px;
-  background-color: rgb(0, 0, 0);
+  width: 100%;
+  border-radius:15px;
+  background-color: rgb(255, 255, 255);
 }
 
-.box-notas-end div p{
+.box-notas-end div span{
   display: flex;
   align-items: center;
   justify-content: start;
@@ -333,6 +331,13 @@ textarea::-webkit-scrollbar{
   margin-left: 10px;
   width: 88%;
   height:  100%;
+}
+
+.box-notas-end div span p{
+  color: black;
+  height: 100%;
+  padding: 0px;
+  margin: 0px;
 }
 
 .box-notas-bottom{
@@ -399,3 +404,13 @@ textarea::-webkit-scrollbar{
 .textTareaView:disabled{
   border:solid 1px rgb(85 85 85);
 }
+
+/*.errorCartel {
+  background-color: red;
+  color:white
+}
+
+.errorOk{
+  background-color: white;
+  color:black important;
+}*/

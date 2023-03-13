@@ -4,6 +4,6 @@ export const cartelError = (Mesanje:string) => {
     toast.error(Mesanje , {
         position: toast.POSITION.TOP_CENTER,
         transition: Bounce,
-        autoClose:3000
+        autoClose:3000,
     });
 }

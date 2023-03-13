@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import "../App.css"
-import { useLocation } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import { cartelError } from "../components/carteles/cartelError"
 import { cartelOk } from "../components/carteles/cartelesOkey"
 import { createCategoria, getCategoria, updateCategoria } from "../api/categorias"
@@ -16,6 +16,7 @@ const defaultCategoria:Categoria = {
 
 export default function Init(){
     const location:number = Number(useLocation().pathname.split("/")[2])     
+    const navigate = useNavigate()
     const [categoria , setCategoria] = useState<Categoria>(defaultCategoria)
     const [name , setName] = useState<string>("")
     const [color , setColor] = useState<string>("")
@@ -53,6 +54,7 @@ export default function Init(){
         }
 
         cartelOk("Creado con Exito")
+        clean();
     }
 
     const editar = async () => {
@@ -72,6 +74,13 @@ export default function Init(){
         }
 
         cartelOk("Editado con Exito")
+        navigate(`/allNotes/${location}`)
+    }
+
+    const clean = () => {
+        setName("")
+        setColor("")
+        setJerarquia(100)
     }
 
     return (

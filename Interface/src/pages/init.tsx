@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom"
 import "../App.css"
 import { useEffect, useState } from "react"
-import { getAllNotasYoungOld } from "../api/notas"
+import { getAllNotas, getAllNotasYoungOld } from "../api/notas"
 import { Nota } from "../interfaces"
 import { cartelError } from "../components/carteles/cartelError"
 
@@ -13,7 +13,7 @@ export default function Init(){
     }, [])
     
     const obtenerLasUltimasNotas = async () => {
-        const data:Nota[] | undefined = await getAllNotasYoungOld()
+        const data:Nota[] | undefined = await getAllNotas()
         if(data === undefined) {
             cartelError("Error de Conexion")
             return
@@ -35,7 +35,7 @@ export default function Init(){
                     </Link>
                 </div>
                 <div className="centrado init-box-links">
-                    <Link to="/categorias/1">
+                    <Link to="/categorias/0">
                         New Categoria
                     </Link>
                 </div>
@@ -48,7 +48,7 @@ export default function Init(){
             <ul 
                 className="ultimas-notas d-flex flex-column align-items-center"
             >
-                    {ultimasNotas.map((n , i) => 
+                    {ultimasNotas.length > 0 && ultimasNotas.map((n , i) => 
                         <Link key={n.id} to={`/view/${n.id}`}>{n.nombre}</Link>
                     )}
             </ul>

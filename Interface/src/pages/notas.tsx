@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import "../App.css"
-import { useLocation } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import { cartelError } from "../components/carteles/cartelError"
 import { Categoria, Nota } from "../interfaces"
 import { createNotas, getNotas, updateNotas } from "../api/notas"
@@ -27,6 +27,7 @@ const defaultCategoria:Categoria = {
 
 export default function Init(){
     const location:number = Number(useLocation().pathname.split("/")[2])     
+    const navigate = useNavigate()     
     const [nota , setNota] = useState<Nota>(defaultNota)
     const [name , setName] = useState<string>("")
     const [text , setText] = useState<string>("")
@@ -37,9 +38,9 @@ export default function Init(){
     const [categoria , setCategoria] = useState<Categoria>(defaultCategoria)
 
     useEffect(() => {
+        if(location !== 0 && nota.id === 0) obtenerNotasDefault()
         obtenerCategorias()
-        if(location !== 0) obtenerNotasDefault()
-    }, [])
+    }, [nota])
     
     const obtenerCategorias = async () => {
         const data:Categoria[] | undefined = await getAllCategorias()
@@ -47,7 +48,13 @@ export default function Init(){
             cartelError("Error de Conexion")
             return
         }
+
+        data.unshift(defaultCategoria)
         setCategorias(data);
+
+        const aux = categorias.find(n => n.id === nota.categoria)
+        if(aux === undefined) return
+        setCategoria(aux)
     }
 
     const obtenerNotasDefault = async () => {
@@ -58,17 +65,9 @@ export default function Init(){
         }
         setNota(data)
         setName(data.nombre)
+        setText(data.text)
         setColor(data.color)
         setJerarquia(data.jerarquia)
-        
-        const aux = categorias.find(n => n.id === data.categoria)
-
-        if(aux === undefined){
-            cartelError("Error de Conexion")
-            return
-        }
-
-        setCategoria(aux)
     }
 
     const cargarCategoria = (nombre:string) => {
@@ -95,9 +94,13 @@ export default function Init(){
         }
 
         cartelOk("Creado con Exito")
+        clean();
     }
 
     const editar = async () => {
+        console.log(categoria.id)
+        return
+
         const resultado:boolean = await updateNotas(
             location,
             {
@@ -111,12 +114,24 @@ export default function Init(){
 	            text:text,
             }
         )
+
+        console.log(resultado)
+
         if(!resultado) {
             cartelError("Error de Conexion")
             return
         }
 
         cartelOk("Editado con Exito")
+                
+        navigate(`/allNotes/${nota.categoria}`)
+    }
+
+    const clean = () => {
+        setNota(defaultNota)
+        setName("")
+        setText("")
+        setColor("")
     }
 
     return (
@@ -129,6 +144,7 @@ export default function Init(){
                     <div>
                         <label>Name</label>
                         <input 
+                            style={{padding: 3}}
                             value={name}
                             onChange={e => {e.preventDefault() ; setName(e.target.value)}}
                         />
@@ -136,7 +152,7 @@ export default function Init(){
                     <div>
                         <label>Jerarquia</label>
                         <input 
-                            style={{textAlign: 'end'}}
+                            style={{textAlign: 'end' , padding: 3}}
                             type="number"
                             min={1} 
                             max={100} 
@@ -154,7 +170,10 @@ export default function Init(){
                 <div className="w100 creat-input-box d-flex justify-content-between align-items-center">
                     <div>
                         <label>Categoria</label>
-                        <select value={categoria.nombre} onChange={e => {e.preventDefault() ; cargarCategoria(e.target.value)}}>
+                        <select 
+                            style={{padding: 3}}
+                            value={categoria.nombre} 
+                            onChange={e => {e.preventDefault() ; cargarCategoria(e.target.value)}}>
                             {categorias.map((n , i) => 
                                 <option key={n.id}>{n.nombre}</option>
                             )}
@@ -163,7 +182,7 @@ export default function Init(){
                     <div>
                         <label>Color</label>
                         <input 
-                            style={{borderRadius: "10px"}} 
+                            style={{borderRadius: "10px" , padding: 1}} 
                             type="color" 
                             value={color}
                             onChange={e => {e.preventDefault() ; setColor(e.target.value)}}
@@ -173,7 +192,7 @@ export default function Init(){
             </div>
             <div className="w100 d-flex justify-content-center" style={{height: "45vh"}}>
                 <textarea 
-                    style={{height: "80%" , width: "40%" , borderRadius: 10}} 
+                    style={{height: "80%" , width: "40%" , borderRadius: 10 , padding: 10}} 
                     onChange={e => setText(e.target.value)}
                     value={text}
                 />

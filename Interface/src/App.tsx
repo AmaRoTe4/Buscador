@@ -7,6 +7,8 @@ import AllNote from "./pages/AllNotes/index"
 import AllNoteCategoria from "./pages/AllNotes/categorias"
 import "./App.css"
 import Time from "./components/time"
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   return (
@@ -22,6 +24,9 @@ function App() {
           <Route path="/view/:id" element={<View />} />
         </Routes>
       </div>
+      <ToastContainer
+        theme="dark"
+      />
     </BrowserRouter>
   )
 }

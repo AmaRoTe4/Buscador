@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "../../App.css"
 import { useEffect, useState } from "react";
 import { deletNotas, getAllNotas, getAllNotasOldYoung, getAllNotasYoungOld, getNotas } from "../../api/notas";
@@ -6,6 +6,7 @@ import { Categoria, Nota } from "../../interfaces";
 import { cartelError } from "../../components/carteles/cartelError";
 import { getCategoria } from "../../api/categorias";
 import { cartelOk } from "../../components/carteles/cartelesOkey";
+import Swal from "sweetalert2";
 
 export default function categoria(){
     const navigate = useNavigate();
@@ -56,7 +57,6 @@ export default function categoria(){
     }
 
     const cambiarOrden = (type:string | undefined) => {
-        if(orden === type) return; 
         if(type !== undefined) setOrden(type)
         if(type === "Default") obtenerNotasDefault()
         else if(type === "Young - Old") obtenerNotasYoungOld()
@@ -66,8 +66,8 @@ export default function categoria(){
     const eliminar = async (id:number) => {
         const resultado = await deletNotas(id)
         if(!resultado) cartelError("Error a la Hora de Eliminar")
-        if(resultado) cartelOk("Eliminar con Exito")
-        cambiarOrden(undefined);
+        if(resultado) cartelOk("Eliminado con Exito")
+        cambiarOrden(orden);
     }
 
     return (
@@ -81,7 +81,7 @@ export default function categoria(){
                         <option>Young - Old</option>
                     </select>
                     <div className="box-orden-categorias-all-div">
-                        <h1>{categoria && categoria.nombre}</h1>
+                        <Link to={`/categorias/${id_categoria}`} >{categoria && categoria.nombre}</Link>
                     </div>
                     <div style={{width: "18%" , height: "35px" , content: ""}}></div>
                 </div>
@@ -89,7 +89,9 @@ export default function categoria(){
                     {notas.length !== 0 && notas.map((n , i) => 
                         <div key={i} className="box-notas-end">
                             <div>
-                                <p onClick={e => {e.preventDefault() ; navigate(`/view/${n.id}`)}}>{n.nombre}</p>
+                                <span onClick={e => {e.preventDefault() ; navigate(`/view/${n.id}`)}}>
+                                    <p className="centrado">{n.nombre}</p>
+                                </span>
                                 <div className="box-notas-bottom centrado">
                                     <button 
                                         style={{backgroundColor: "blue"}} 
@@ -99,7 +101,15 @@ export default function categoria(){
                                 <div className="box-notas-bottom centrado">
                                     <button 
                                         style={{backgroundColor: "red"}} 
-                                        onClick={e => {e.preventDefault() ; eliminar(n.id)}}
+                                        onClick={e => {e.preventDefault(); Swal.fire({
+                                            title: 'Seguro que quieres eliminar esta nota?',
+                                            text: '',
+                                            confirmButtonText: 'Eliminar',
+                                            confirmButtonColor: 'red',
+                                        }).then((result) => {
+                                            if(result.isConfirmed) eliminar(n.id);
+                                        })
+                                    }}
                                     ></button>
                                 </div>
                             </div>
