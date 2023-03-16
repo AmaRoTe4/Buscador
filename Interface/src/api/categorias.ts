@@ -1,7 +1,8 @@
+import { deletNotas, getAllNotas } from './notas';
 import axios from "axios";
-import { Categoria } from "../interfaces";
+import { Categoria, Nota } from "../interfaces";
 
-const path:string = "http://localhost:3500/api/categorias/"
+const path:string = "https://apifreeamaro.azurewebsites.net/api/categorias/"
 
 //@ts-ignore
 export const getAllCategorias = async ():Categoria[] | undefined => {
@@ -50,6 +51,15 @@ export const createCategoria = async (data:Categoria):boolean => {
 //@ts-ignore
 export const deletCategoria = async (id:number):boolean => {
     try{
+        const data:Nota[] | undefined = await getAllNotas()
+        if(data === undefined) return false
+
+        const idRemove:number[] = data.filter(n => n.categoria === id).map(n => n.id)
+
+        for(let i = 0 ; i < idRemove.length ; i++){
+            await deletNotas(idRemove[i])
+        }
+
         await axios.delete(path + id)
         return true
     }catch(error){

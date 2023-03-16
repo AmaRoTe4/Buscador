@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Nota } from "../interfaces";
 
-const path:string = "http://localhost:3500/api/notas/"
+const path:string = "https://apifreeamaro.azurewebsites.net/api/notas/"
 
 //@ts-ignore
 export const getAllNotas = async ():Nota[] | undefined => {

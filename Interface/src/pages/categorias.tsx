@@ -3,7 +3,7 @@ import "../App.css"
 import { useLocation, useNavigate } from "react-router-dom"
 import { cartelError } from "../components/carteles/cartelError"
 import { cartelOk } from "../components/carteles/cartelesOkey"
-import { createCategoria, getCategoria, updateCategoria } from "../api/categorias"
+import { createCategoria, getCategoria, updateCategoria , deletCategoria} from "../api/categorias"
 import { Categoria } from "../interfaces"
 
 const defaultCategoria:Categoria = {
@@ -77,6 +77,18 @@ export default function Init(){
         navigate(`/allNotes/${location}`)
     }
 
+    async function eliminar() {    
+        const resultado:boolean = await deletCategoria(location)
+        
+        if(!resultado) {
+            cartelError("Error a la hora de eliminar")
+            return
+        }
+    
+        cartelOk("Eliminada con Exito")
+        navigate(`/allNotes/`)
+    }
+
     const clean = () => {
         setName("")
         setColor("")
@@ -122,13 +134,19 @@ export default function Init(){
                     />
                 </div>
             </div>  
-            <div className="w100 mb-5 d-flex justify-content-center align-items-center" style={{height: "6vh"}}>
+            <div className="w100 mb-5 d-flex flex-column justify-content-center align-items-center" style={{height: "6vh"}}>
                 <button 
-                    className="btn btn-success btnAcciones"
+                    className="btn btn-success btnAcciones mb-3"
                     onClick={e => {e.preventDefault(); location === 0 ? crear() : editar() }}
                 >
                     {location === 0 ? "Create" : "Editar"}
                 </button>
+                {location !== 0 && <button 
+                    className="btn btn-danger btnAcciones"
+                    onClick={e => {e.preventDefault(); eliminar() }}
+                >
+                    Eliminar
+                </button>}
             </div>
         </div>
     )

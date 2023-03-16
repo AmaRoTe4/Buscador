@@ -98,9 +98,6 @@ export default function Init(){
     }
 
     const editar = async () => {
-        console.log(categoria.id)
-        return
-
         const resultado:boolean = await updateNotas(
             location,
             {
